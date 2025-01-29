@@ -2097,7 +2097,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         try {
             incrementRecursionDepth();
             log(level, marker, fqcn, location, message, throwable);
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             handleLogMessageException(ex, fqcn, message);
         } finally {
             decrementRecursionDepth();
@@ -2196,9 +2196,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
                                final Throwable throwable) {
         try {
             log(level, marker, fqcn, location, msg, throwable);
-        } catch (final Exception e) {
+        } catch (final Throwable t) {
             // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
-            handleLogMessageException(e, fqcn, msg);
+            handleLogMessageException(t, fqcn, msg);
         }
     }
 
@@ -2211,21 +2211,21 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
 
     // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
     // TODO Configuration setting to propagate exceptions back to the caller *if requested*
-    private void handleLogMessageException(final Exception exception, final String fqcn, final Message msg) {
-        if (exception instanceof LoggingException) {
-            throw (LoggingException) exception;
+    private void handleLogMessageException(final Throwable throwable, final String fqcn, final Message msg) {
+        if (throwable instanceof LoggingException) {
+            throw (LoggingException) throwable;
         }
         final String format = msg.getFormat();
         final int formatLength = format == null ? 4 : format.length();
         final StringBuilder sb = new StringBuilder(formatLength + 100);
         sb.append(fqcn);
         sb.append(" caught ");
-        sb.append(exception.getClass().getName());
+        sb.append(throwable.getClass().getName());
         sb.append(" logging ");
         sb.append(msg.getClass().getSimpleName());
         sb.append(": ");
         sb.append(format);
-        StatusLogger.getLogger().warn(sb.toString(), exception);
+        StatusLogger.getLogger().warn(sb.toString(), throwable);
     }
 
     @Override

@@ -56,6 +56,7 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
     @Override
     public void initialize() {
         getStrSubstitutor().setConfiguration(this);
+        getConfigurationStrSubstitutor().setConfiguration(this);
         super.getScheduler().start();
         doConfigure();
         setState(State.INITIALIZED);
