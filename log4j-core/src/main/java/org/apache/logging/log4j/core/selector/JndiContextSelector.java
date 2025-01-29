@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.LoggerContext;
@@ -92,6 +93,12 @@ public class JndiContextSelector implements NamedContextSelector {
         new ConcurrentHashMap<>();
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
+
+    public JndiContextSelector() {
+        if (!JndiManager.isJndiEnabled()) {
+            throw new IllegalStateException("JNDI must be enabled by setting log4j2.enableJndi=true");
+        }
+    }
 
     @Override
     public void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
