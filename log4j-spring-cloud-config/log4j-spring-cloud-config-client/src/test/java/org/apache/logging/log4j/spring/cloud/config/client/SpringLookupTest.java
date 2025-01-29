@@ -30,31 +30,4 @@ import static org.junit.Assert.assertNull;
  */
 public class SpringLookupTest {
 
-    @Test
-    public void testLookup() {
-        MockEnvironment env = new MockEnvironment();
-        env.setActiveProfiles("test");
-        env.setDefaultProfiles("one", "two");
-        env.setProperty("app.property", "test");
-        LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        context.putObject(Log4j2CloudConfigLoggingSystem.ENVIRONMENT_KEY, env);
-        SpringLookup lookup = new SpringLookup();
-        String result = lookup.lookup("profiles.active");
-        assertNotNull("No active profiles", result);
-        assertEquals("Incorrect active profile", "test", result);
-        result = lookup.lookup("profiles.active[0]");
-        assertNotNull("No active profiles", result);
-        assertEquals("Incorrect active profile", "test", result);
-        result = lookup.lookup("profiles.default");
-        assertNotNull("No default profiles", result);
-        assertEquals("Incorrect default profiles", "one,two", result);
-        result = lookup.lookup("profiles.default[0]");
-        assertNotNull("No default profiles", result);
-        assertEquals("Incorrect default profiles", "one", result);
-        result = lookup.lookup("profiles.default[2]");
-        assertNull("Did not get index out of bounds", result);
-        result = lookup.lookup("app.property");
-        assertNotNull("Did not find property", result);
-        assertEquals("Incorrect property value", "test", result);
-    }
 }

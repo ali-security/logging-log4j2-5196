@@ -25,12 +25,16 @@ cache:
 before_cache:
   - rm -rf $HOME/.m2/repository/org/apache/logging/log4j
 
+before_install:
+  - wget --output-document=jdk.tar.gz https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz
+  - mkdir -p /home/travis/openjdk11
+  - tar --extract --file jdk.tar.gz -C /home/travis/openjdk11 --strip-components=1
+
 install:
   - jdk_switcher use openjdk8
   - mvn -t .travis-toolchains.xml install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
-  - $TRAVIS_BUILD_DIR/install-jdk.sh --install openjdk11 --target /home/travis/openjdk11
   - jdk_switcher use openjdk8
   - mvn -t .travis-toolchains.xml test -B -V
 
